@@ -1,6 +1,45 @@
-# 🦜️🔗 LangChain 🤝 Streamlit agent examples
+# ꡌꡙꡚ Labrynth Learning
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/langchain-ai/streamlit-agent?quickstart=1)
+
+This repository contains reference implementations of various LangChain agents as Streamlit apps including:
+
+## Setup
+
+This project uses [Poetry](https://python-poetry.org/) for dependency management.
+
+```shell
+# Install poetry
+brew install pipx
+pipx ensurepath
+pipx install poetry
+```
+
+```shell
+# Use a newer python version
+poetry env use python3.10
+python --version  # Should show 3.10.x or higher
+```
+
+
+```shell
+# Install dependecies
+$ poetry install
+
+# Activate the new environment
+poetry shell
+```
+
+## Running
+
+```shell
+# Run mrkl_demo.py or another app the same way
+$ streamlit run streamlit_agent/mrkl_demo.py
+```
+
+## Where did this code come from?
+This is a branch from: 
+* ([Streamlit Langchain: Chat with Search Demo](https://langchain-chat-search.streamlit.app/))
+* ([Streamlit-Agent Github](https://github.com/langchain-ai/streamlit-agent))
 
 This repository contains reference implementations of various LangChain agents as Streamlit apps including:
 
@@ -15,57 +54,6 @@ This repository contains reference implementations of various LangChain agents a
 - `chat_pandas_df.py`: Chatbot to ask questions about a pandas DF (Note: uses `PythonAstREPLTool` which is vulnerable to arbitrary code execution,
   see [langchain #7700](https://github.com/langchain-ai/langchain/issues/7700))
 
-Apps feature LangChain 🤝 Streamlit integrations such as the
-[Callback integration](https://python.langchain.com/docs/modules/callbacks/integrations/streamlit) and
-[StreamlitChatMessageHistory](https://python.langchain.com/docs/integrations/memory/streamlit_chat_message_history).
-
-## More great app examples
-
-Check out some other full examples of apps that utilize LangChain + Streamlit:
-
-- [Auto-graph](https://auto-graph.streamlit.app/) - Build knowledge graphs from user-input text ([Source code](https://github.com/langchain-ai/langchain-benchmarks/blob/main/extraction/streamlit_app.py))
-- [Web Explorer](https://web-explorer.streamlit.app/) - Retrieve and summarize insights from the web ([Source code](https://github.com/langchain-ai/web-explorer))
-- [LangChain Teacher](https://lang-teacher.streamlit.app/) - Learn LangChain from an LLM tutor ([Source code](https://github.com/langchain-ai/langchain-teacher))
-- [Text Splitter Playground](https://langchain-text-splitter.streamlit.app/) - Play with various types of text splitting for RAG ([Source code](https://github.com/langchain-ai/text-split-explorer))
-- [Tweet Generator](https://elon-twitter-clone.streamlit.app/) - Fine tune GPT-3.5 on tweets ([Source code](https://github.com/langchain-ai/twitter-finetune))
-
-## Setup
-
-This project uses [Poetry](https://python-poetry.org/) for dependency management.
-
-```shell
-# Create Python environment
-$ poetry install
-
-# Install git pre-commit hooks
-$ poetry shell
-$ pre-commit install
-```
-
-## Running
-
-```shell
-# Run mrkl_demo.py or another app the same way
-$ streamlit run streamlit_agent/mrkl_demo.py
-```
-
-# Running with Docker
-
-This project includes `Dockerfile` to run the app in Docker container. In order to optimise the Docker Image is optimised for size and building time with cache techniques.
-
-To generate Image with `DOCKER_BUILDKIT`, follow below command
-
-```DOCKER_BUILDKIT=1 docker build --target=runtime . -t langchain-streamlit-agent:latest```
-
-1. Run the docker container directly
-
-``docker run -d --name langchain-streamlit-agent -p 8051:8051 langchain-streamlit-agent:latest ``
-
-2. Run the docker container using docker-compose (Recommended)
-
-Edit the Command in `docker-compose` with target streamlit app
-
-``docker-compose up``
 
 ## Contributing
 
