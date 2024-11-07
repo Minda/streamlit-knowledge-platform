@@ -34,6 +34,19 @@ Check out some other full examples of apps that utilize LangChain + Streamlit:
 This project uses [Poetry](https://python-poetry.org/) for dependency management.
 
 ```shell
+# Install poetry
+brew install pipx
+pipx ensurepath
+pipx install poetry
+```
+
+```shell
+# Use a newer python version
+poetry env use python3.10
+python --version  # Should show 3.10.x or higher
+```
+
+```shell
 # Create Python environment
 $ poetry install
 
