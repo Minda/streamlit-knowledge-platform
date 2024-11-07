@@ -13,6 +13,12 @@ from langchain_openai import OpenAI
 from sqlalchemy import create_engine
 import sqlite3
 
+# openai_api_key = st.secrets.openai_api_key
+WEAVIATE_API_KEY = st.secrets.WEAVIATE_API_KEY
+UNSTRUCTURED_API_KEY = st.secrets.UNSTRUCTURED_API_KEY
+UNSTRUCTURED_API_URL = st.secrets.UNSTRUCTURED_API_KEY
+WEAVIATE_URL = st.secrets.WEAVIATE_URL
+
 from streamlit_agent.callbacks.capturing_callback_handler import playback_callbacks
 from streamlit_agent.clear_results import with_clear_container
 
@@ -26,10 +32,14 @@ SAVED_SESSIONS = {
 }
 
 st.set_page_config(
-    page_title="MRKL", page_icon="🦜", layout="wide", initial_sidebar_state="collapsed"
+    page_title="Mind Matrix", page_icon="📓", layout="wide", initial_sidebar_state="collapsed"
 )
 
-"# 🦜🔗 MRKL"
+
+"# ꡌꡙꡚ Labrynth Learning"
+
+st.subheader("Empower Your Knowledge and Skill Acquisition Journey")
+
 
 # Setup credentials in Streamlit
 user_openai_api_key = st.sidebar.text_input(
@@ -76,36 +86,106 @@ tools = [
 react_agent = create_react_agent(llm, tools, hub.pull("hwchase17/react"))
 mrkl = AgentExecutor(agent=react_agent, tools=tools)
 
-with st.form(key="form"):
-    if not enable_custom:
-        "Ask one of the sample questions, or enter your API Key in the sidebar to ask your own custom questions."
-    prefilled = st.selectbox("Sample questions", sorted(SAVED_SESSIONS.keys())) or ""
-    user_input = ""
 
-    if enable_custom:
-        user_input = st.text_input("Or, ask your own question")
-    if not user_input:
-        user_input = prefilled
-    submit_clicked = st.form_submit_button("Submit Question")
 
-output_container = st.empty()
-if with_clear_container(submit_clicked):
-    output_container = output_container.container()
-    output_container.chat_message("user").write(user_input)
+# with st.form(key="form"):
+#     if not enable_custom:
+#         "Ask one of the sample questions, or enter your API Key in the sidebar to ask your own custom questions."
+#     prefilled = st.selectbox("Sample questions", sorted(SAVED_SESSIONS.keys())) or ""
+#     user_input = ""
+#
+#     if enable_custom:
+#         user_input = st.text_input("Or, ask your own question")
+#     if not user_input:
+#         user_input = prefilled
+#     submit_clicked = st.form_submit_button("Submit Question")
+#
+# output_container = st.empty()
+# if with_clear_container(submit_clicked):
+#     output_container = output_container.container()
+#     output_container.chat_message("user").write(user_input)
+#
+#     answer_container = output_container.chat_message("assistant", avatar="🦜")
+#     st_callback = StreamlitCallbackHandler(answer_container)
+#     cfg = RunnableConfig()
+#     cfg["callbacks"] = [st_callback]
+#
+#     # If we've saved this question, play it back instead of actually running LangChain
+#     # (so that we don't exhaust our API calls unnecessarily)
+#     if user_input in SAVED_SESSIONS:
+#         session_name = SAVED_SESSIONS[user_input]
+#         session_path = Path(__file__).parent / "runs" / session_name
+#         print(f"Playing saved session: {session_path}")
+#         answer = playback_callbacks([st_callback], str(session_path), max_pause_time=2)
+#     else:
+#         answer = mrkl.invoke({"input": user_input}, cfg)
+#
+#     answer_container.write(answer["output"])
 
-    answer_container = output_container.chat_message("assistant", avatar="🦜")
-    st_callback = StreamlitCallbackHandler(answer_container)
-    cfg = RunnableConfig()
-    cfg["callbacks"] = [st_callback]
+st.divider()  # Adds a horizontal rule
+st.header("✎ Your Use Case")
+st.write("Generate lessons to build a plan to learn the concepts you need to make your idea into a reality")
 
-    # If we've saved this question, play it back instead of actually running LangChain
-    # (so that we don't exhaust our API calls unnecessarily)
-    if user_input in SAVED_SESSIONS:
-        session_name = SAVED_SESSIONS[user_input]
-        session_path = Path(__file__).parent / "runs" / session_name
-        print(f"Playing saved session: {session_path}")
-        answer = playback_callbacks([st_callback], str(session_path), max_pause_time=2)
-    else:
-        answer = mrkl.invoke({"input": user_input}, cfg)
+# Text input with session state
+user_input = st.text_input(
+    label="Enter your use case here",
+    key="use_case"  # This automatically stores the value in session state
+)
 
-    answer_container.write(answer["output"])
+# Access the input value anywhere using:
+st.write("You entered:", st.session_state.use_case)
+
+st.divider()  # Adds a horizontal rule
+st.header("💬 Verbal Review")
+st.write("Time for a verbal review of your lessons. We have three options for you to choose from.")
+
+# Create three columns
+col1, col2, col3, col4 = st.columns(4)
+
+# Add a button to each column
+with col1:
+    if st.button("Practice Basic Concepts"):
+        st.write("Let's practice basic concepts!")
+
+with col2:
+    if st.button("Practice Study Cards"):
+        st.write("Lets practice study cards!")
+
+with col3:
+    if st.button("Interview Me"):
+        st.write("Time to practice interview questions!")
+
+# # Button in a specific color
+# if st.button("Delete", type="primary"):  # primary gives it emphasis
+#     st.write("Delete button clicked!")
+st.divider()  # Adds a horizontal rule
+st.header("👩‍🎓Study Cards")
+st.write("Spaced Repetition Cards, based on your lessons")
+if st.button("Review Study Cards"):
+    st.write("Time to review!")
+
+st.divider()  # Adds a horizontal rule
+st.header("🗄️Add to your Knowledge Base")
+st.write("Upload text, documentation or pdf to your knowledge base")
+# Specify allowed file types
+uploaded_file = st.file_uploader(
+    "Upload a file",
+    type=['csv', 'txt', 'pdf'],  # List of allowed file types
+    accept_multiple_files=False,  # Allow multiple files
+    help="Upload your file here"  # Tooltip text
+)
+
+import weaviate
+
+
+# documents = client.collections.get(os.getenv("WEAVIATE_COLLECTION_CLASS_NAME"))
+#
+# response = documents.query.hybrid(
+#     query="How would you Design a URL Shortener?",
+#     alpha=0.5, # equal weighting of BM25 and vector search
+#     return_properties=['text'],
+#     auto_limit=2  # autocut after 2 jumps
+# )
+#
+# for obj in response.objects:
+#     print(json.dumps(obj.properties, indent=2))
